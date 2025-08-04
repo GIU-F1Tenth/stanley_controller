@@ -41,7 +41,9 @@ A ROS2 Python package implementing the Stanley controller for path tracking in F
 
 ## Overview
 
-The Stanley controller is a path tracking algorithm that computes steering commands to follow a given reference path. It combines cross-track error correction with heading error correction to provide smooth and stable path following.
+## Overview
+
+This implementation features a high-performance Stanley controller with advanced algorithms specifically designed for F1Tenth racing. The Stanley controller is a path tracking algorithm that computes steering commands to follow a given reference path. It combines cross-track error correction with heading error correction to provide smooth and stable path following.
 
 ## Features
 
