@@ -50,7 +50,6 @@ class StanleyController(Node):
                                0.8)  # Speed command smoothing
         # Damping for oscillations
         self.declare_parameter('cross_track_damping', 0.1)
-        self.declare_parameter('csv_header', True)  # CSV header presence
         # Control loop frequency (Hz)
         self.declare_parameter('control_frequency', 50.0)
         # Maximum allowed cross track error (m)
@@ -90,8 +89,6 @@ class StanleyController(Node):
             'speed_smoothing_factor').get_parameter_value().double_value
         self.cross_track_damping = self.get_parameter(
             'cross_track_damping').get_parameter_value().double_value
-        self.csv_header = self.get_parameter(
-            'csv_header').get_parameter_value().bool_value
         self.control_frequency = self.get_parameter(
             'control_frequency').get_parameter_value().double_value
         self.max_cross_track_error = self.get_parameter(
