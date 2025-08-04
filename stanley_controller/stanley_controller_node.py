@@ -9,7 +9,6 @@ from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped, Twist
 from nav_msgs.msg import Odometry, Path
 from std_msgs.msg import Float64
-from sensor_msgs.msg import LaserScan
 
 
 class StanleyController(Node):
