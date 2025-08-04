@@ -35,7 +35,7 @@ This implementation features a high-performance Stanley controller with advanced
 
 -   **x, y, v Format**: Loads waypoints with position and velocity data
 -   **Header Support**: Automatically detects and skips header rows
--   **Flexible Format**: Robust parsing handles various CSV formatsller
+-   **Flexible Format**: Robust parsing handles various CSV formats
 
 A ROS2 Python package implementing the Stanley controller for path tracking in F1Tenth autonomous racing.
 
