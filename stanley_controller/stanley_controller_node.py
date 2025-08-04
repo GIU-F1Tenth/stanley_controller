@@ -50,6 +50,19 @@ class StanleyController(Node):
                                0.8)  # Speed command smoothing
         # Damping for oscillations
         self.declare_parameter('cross_track_damping', 0.1)
+        self.declare_parameter('csv_header', True)  # CSV header presence
+        # Control loop frequency (Hz)
+        self.declare_parameter('control_frequency', 50.0)
+        # Maximum allowed cross track error (m)
+        self.declare_parameter('max_cross_track_error', 3.0)
+        # Distance to brake in emergency (m)
+        self.declare_parameter('emergency_brake_distance', 0.8)
+        self.declare_parameter(
+            'odom_topic', '/ego_racecar/odom')  # Odometry topic
+        self.declare_parameter('cmd_vel_topic', '/cmd_vel')  # Drive topic
+        self.declare_parameter(
+            'error_topic', '/cross_track_error')  # Error topic
+        self.declare_parameter('enable_emergency_brake', False)
 
         # Get parameters
         self.k_p = self.get_parameter('k_p').get_parameter_value().double_value
@@ -77,6 +90,22 @@ class StanleyController(Node):
             'speed_smoothing_factor').get_parameter_value().double_value
         self.cross_track_damping = self.get_parameter(
             'cross_track_damping').get_parameter_value().double_value
+        self.csv_header = self.get_parameter(
+            'csv_header').get_parameter_value().bool_value
+        self.control_frequency = self.get_parameter(
+            'control_frequency').get_parameter_value().double_value
+        self.max_cross_track_error = self.get_parameter(
+            'max_cross_track_error').get_parameter_value().double_value
+        self.emergency_brake_distance = self.get_parameter(
+            'emergency_brake_distance').get_parameter_value().double_value
+        self.odom_topic = self.get_parameter(
+            'odom_topic').get_parameter_value().string_value
+        self.cmd_vel_topic = self.get_parameter(
+            'cmd_vel_topic').get_parameter_value().string_value
+        self.error_topic = self.get_parameter(
+            'error_topic').get_parameter_value().string_value
+        self.enable_emergency_brake = self.get_parameter(
+            'enable_emergency_brake').get_parameter_value().bool_value
 
         # State variables
         self.current_pose = None
@@ -90,20 +119,20 @@ class StanleyController(Node):
         # Publishers
         self.cmd_vel_pub = self.create_publisher(
             Twist,
-            '/cmd_vel',
+            self.cmd_vel_topic,
             10
         )
 
         self.cross_track_error_pub = self.create_publisher(
             Float64,
-            '/cross_track_error',
+            self.error_topic,
             10
         )
 
         # Subscribers
         self.odom_sub = self.create_subscription(
             Odometry,
-            '/ego_racecar/odom',
+            self.odom_topic,
             self.odom_callback,
             10
         )
@@ -114,7 +143,7 @@ class StanleyController(Node):
 
         # Timer for control loop
         self.control_timer = self.create_timer(
-            0.02, self.control_loop)  # 50 Hz
+            1.0 / self.control_frequency, self.control_loop)  # Use parameter frequency
 
         self.get_logger().info('High-Speed Stanley Controller Node initialized')
         if self.reference_path:
@@ -441,6 +470,14 @@ class StanleyController(Node):
         cross_track_error = self.calculate_path_based_cross_track_error(
             target_waypoint, target_index)
 
+        # Safety check: limit cross track error
+        if abs(cross_track_error) > self.max_cross_track_error:
+            self.get_logger().warn(
+                f'Cross track error {cross_track_error:.3f} exceeds maximum {self.max_cross_track_error:.3f}')
+            # Clamp the error to prevent excessive steering
+            cross_track_error = math.copysign(
+                self.max_cross_track_error, cross_track_error)
+
         # Calculate heading error using path tangent
         heading_error = self.calculate_heading_error(
             target_waypoint, target_index)
@@ -476,6 +513,12 @@ class StanleyController(Node):
         # Calculate target speed from CSV and steering
         target_speed = self.calculate_target_speed(
             target_waypoint, steering_angle)
+
+        # Safety check: emergency braking if too close to path boundary
+        if self.enable_emergency_brake and abs(cross_track_error) > self.emergency_brake_distance:
+            target_speed = min(target_speed, self.min_speed)
+            self.get_logger().warn(
+                f'Emergency speed reduction due to cross track error: {cross_track_error:.3f}')
 
         # Convert to cmd_vel message
         cmd_vel_msg = self.convert_to_cmd_vel(steering_angle, target_speed)

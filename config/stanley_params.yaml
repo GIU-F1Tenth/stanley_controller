@@ -20,6 +20,7 @@ stanley_controller:
 
         # Path and reference parameters
         path_csv_file: "path/to/csv" # Path to CSV file with x,y,v waypoints
+        csv_header: true # Include header in CSV file
         use_front_axle: true # Use front axle as reference point
 
         # Control smoothing and stability
@@ -32,6 +33,7 @@ stanley_controller:
         # Safety parameters
         max_cross_track_error: 3.0 # Maximum allowed cross track error (m)
         emergency_brake_distance: 0.8 # Distance to brake in emergency (m)
+        enable_emergency_brake: false # Enable emergency braking
 
         # Topic names
         odom_topic: "/ego_racecar/odom"
