@@ -49,7 +49,6 @@ The Stanley controller is a path tracking algorithm that computes steering comma
 -   Configurable control parameters via YAML configuration
 -   Speed adaptation based on steering angle (slower for sharp turns)
 -   ROS2 standard package structure
--   Comprehensive test suite
 -   Launch file for easy deployment
 
 ## Package Structure
@@ -63,11 +62,6 @@ stanley_controller/
 ├── stanley_controller/
 │   ├── __init__.py
 │   └── stanley_controller_node.py    # Main controller node
-├── test/
-│   ├── __init__.py
-│   ├── test_flake8.py
-│   ├── test_pep257.py
-│   └── test_stanley_controller.py    # Unit tests
 ├── resource/
 │   └── stanley_controller
 ├── package.xml                       # Package metadata
@@ -152,18 +146,6 @@ ros2 run stanley_controller stanley_controller_node \
   --ros-args -p path_csv_file:="/path/to/racing_line.csv"
 ```
 
-## Testing
-
-Run the test suite:
-
-```bash
-# Run all tests
-colcon test --packages-select stanley_controller
-
-# Run specific tests
-python -m pytest test/test_stanley_controller.py
-```
-
 ## Algorithm
 
 The Stanley controller uses the following control law:
@@ -188,7 +170,7 @@ Where:
 
 ## Contributing
 
-Please follow ROS2 coding standards and ensure all tests pass before submitting contributions.
+Please follow ROS2 coding standards before submitting contributions.
 
 ## License
 
