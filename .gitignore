@@ -49,3 +49,19 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+
+install/
+log/
+build/
+colcon/
+*.db
+*.log
+*.sqlite3
+*.yaml
+*.json
+*.xml
+ros2_ws/
+.env
+.launch.py
+.launch.xml
+.launch.yaml

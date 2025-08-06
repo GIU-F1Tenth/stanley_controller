@@ -1,0 +1,41 @@
+# High-Speed Stanley Controller Parameters for F1Tenth Racing
+stanley_controller:
+    ros__parameters:
+        # Control gains - optimized for high-speed racing
+        k_p: 0.8 # Base proportional gain for cross track error
+        k_adaptive_min: 0.5 # Minimum adaptive gain
+        k_adaptive_max: 1.5 # Maximum adaptive gain
+
+        # Lookahead parameters for high-speed stability
+        lookahead_distance: 1.5 # Base lookahead distance (m)
+        lookahead_speed_factor: 0.3 # Speed-dependent lookahead factor
+
+        # Speed parameters for F1Tenth racing
+        max_speed: 8.0 # Maximum speed (m/s) - high for racing
+        min_speed: 1.0 # Minimum speed (m/s)
+
+        # Vehicle parameters (F1Tenth standard)
+        wheelbase: 0.3302 # Vehicle wheelbase (m)
+        max_steering_angle: 0.4189 # Maximum steering angle (rad) ~24 degrees
+
+        # Path and reference parameters
+        path_csv_file: "path/to/csv" # Path to CSV file with x,y,v waypoints
+        csv_header: true # Include header in CSV file
+        use_front_axle: true # Use front axle as reference point
+
+        # Control smoothing and stability
+        speed_smoothing_factor: 0.8 # Speed command smoothing (0-1)
+        cross_track_damping: 0.1 # Damping for oscillation reduction
+
+        # Control loop frequency
+        control_frequency: 50.0 # Control loop frequency (Hz)
+
+        # Safety parameters
+        max_cross_track_error: 3.0 # Maximum allowed cross track error (m)
+        emergency_brake_distance: 0.8 # Distance to brake in emergency (m)
+        enable_emergency_brake: false # Enable emergency braking
+
+        # Topic names
+        odom_topic: "/ego_racecar/odom"
+        cmd_vel_topic: "/cmd_vel"
+        error_topic: "/cross_track_error"
